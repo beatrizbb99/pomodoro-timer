@@ -46,6 +46,11 @@ export const createFocusAnimation = (
         .add({
             targets: iceRef.current,
             duration: (workTime * 60 * 1000) / 2,
+            complete: () => {
+                if (iceRef.current) {
+                    iceRef.current.style.opacity = "0";
+                }
+            }
         });
 
     const coffeeAnimation = anime({

@@ -31,7 +31,6 @@ const Coffee = () => {
     useEffect(() => {
         if (!focusAnimationRef.current) return;
         if (!breakTlRef.current) return;
-        if (coffeeRef.current) { coffeeRef.current.style.opacity = "100"; }
 
         if (timerState === TimerState.Paused) {
             focusAnimationRef.current.ice.pause();
@@ -43,6 +42,7 @@ const Coffee = () => {
         } else if (!breakTlCompleted && phase === Phase.Break) {
             breakTlRef.current.play();
         } else if (timerState === TimerState.Restarted) {
+            breakTlRef.current.pause();
             focusAnimationRef.current.ice.restart();
             focusAnimationRef.current.coffee.restart();
             focusAnimationRef.current.ice.pause();

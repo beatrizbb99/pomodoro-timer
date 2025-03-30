@@ -24,8 +24,8 @@ export const TimerContextProvider: React.FC<{ children: ReactNode }> = ({
     children
 }) => {
     const [timerState, setTimerState] = useState<TimerState>(TimerState.Paused);
-    const [workTime, setWorkTime] = useState<number>(25);
-    const [breakTime, setBreakTime] = useState<number>(5);
+    const [workTime, setWorkTime] = useState<number>(0.1);
+    const [breakTime, setBreakTime] = useState<number>(0.1);
     const [timeLeft, setTimeLeft] = useState<number>(workTime * 60);
     const [sessionNumber, setSessionNumber] = useState<number>(1);
     const [phase, setPhase] = useState<Phase>(Phase.Focus);
