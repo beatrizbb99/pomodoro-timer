@@ -42,16 +42,11 @@ export const createFocusAnimation = (
         translateY: [0, 200],
         opacity: [1, 0],
         duration: (workTime * 60 * 1000) / 2
-    })
-        .add({
-            targets: iceRef.current,
-            duration: (workTime * 60 * 1000) / 2,
-            complete: () => {
-                if (iceRef.current) {
-                    iceRef.current.style.opacity = "0";
-                }
-            }
-        });
+    }).add({
+        targets: iceRef.current,
+        duration: (workTime * 60 * 1000) / 2,
+    });
+
 
     const coffeeAnimation = anime({
         targets: coffeeRef.current,
@@ -60,6 +55,7 @@ export const createFocusAnimation = (
             "M20 477H98 178L177.587 486.467H20.239Z",
         ],
         duration: workTime * 60 * 1000,
+        opacity: 1,
         easing: "linear",
         autoplay: false,
         complete: () => {

@@ -13,10 +13,15 @@ const Coffee = () => {
     const focusAnimationRef = useRef<{ ice: anime.AnimeInstance; coffee: anime.AnimeInstance } | null>(null);
     const breakTlRef = useRef<anime.AnimeInstance | null>(null);
     const [breakTlCompleted, setBreakTlCompleted] = useState<boolean>(false);
+    const [timeJump, setTimeJump] = useState<number>((workTime * 60 * 1000) - (timeLeft * 1000));
 
     useEffect(() => {
         breakTlRef.current = createBreakAnimation(coffeeRef, iceRef, setBreakTlCompleted);
     }, []);
+
+    useEffect(() => {
+        setTimeJump((workTime * 60 * 1000) - (timeLeft * 1000));
+    }, [workTime, timeLeft]);
 
     useEffect(() => {
         focusAnimationRef.current = createFocusAnimation(coffeeRef, iceRef, workTime);
@@ -36,17 +41,24 @@ const Coffee = () => {
             focusAnimationRef.current.ice.pause();
             focusAnimationRef.current.coffee.pause();
         } else if (timerState === TimerState.Running && phase === Phase.Focus) {
+            breakTlRef.current.pause();
             setBreakTlCompleted(false);
             focusAnimationRef.current.ice.play();
             focusAnimationRef.current.coffee.play();
         } else if (!breakTlCompleted && phase === Phase.Break) {
-            breakTlRef.current.play();
+            focusAnimationRef.current.ice.restart();
+            focusAnimationRef.current.ice.pause();
+            focusAnimationRef.current.coffee.restart();
+            focusAnimationRef.current.coffee.pause();
+            breakTlRef.current.restart();
         } else if (timerState === TimerState.Restarted) {
+            breakTlRef.current.restart();
             breakTlRef.current.pause();
             focusAnimationRef.current.ice.restart();
-            focusAnimationRef.current.coffee.restart();
             focusAnimationRef.current.ice.pause();
+            focusAnimationRef.current.coffee.restart();
             focusAnimationRef.current.coffee.pause();
+            setBreakTlCompleted(false);
         }
     }, [timerState, phase]);
 
@@ -62,10 +74,10 @@ const Coffee = () => {
                 }
             } else {
                 if (focusAnimationRef.current) {
-                    const timeJump = (workTime * 60 * 1000) - (timeLeft * 1000);
-
+                    focusAnimationRef.current.ice.pause();
                     focusAnimationRef.current.ice.seek(timeJump);
                     focusAnimationRef.current.ice.play();
+                    focusAnimationRef.current.coffee.pause();
                     focusAnimationRef.current.coffee.seek(timeJump);
                     focusAnimationRef.current.coffee.play();
                 }
@@ -76,7 +88,7 @@ const Coffee = () => {
         return () => {
             document.removeEventListener("visibilitychange", handleVisibilityChange);
         };
-    }, [timerState, phase, workTime, timeLeft]);
+    }, [timerState, phase, timeJump]);
 
     return (
         <div className="relative">
